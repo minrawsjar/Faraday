@@ -11,6 +11,7 @@ const REGISTRY_ABI = parseAbi([
 ]);
 
 const PROTOCOLS = [
+  { label: "Aave v3 — Base Sepolia",     value: 0, chainId: 84532 },
   { label: "Aave v3 — Ethereum Sepolia", value: 0, chainId: 11155111 },
   { label: "Aave v3 — Arbitrum Sepolia", value: 0, chainId: 421614 },
   { label: "Venus — BNB Testnet",        value: 1, chainId: 97 },

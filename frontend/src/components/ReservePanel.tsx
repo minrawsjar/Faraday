@@ -168,6 +168,22 @@ export function ReservePanel() {
            needsApproval      ? "Approve USDC"           :
            mode === "deposit" ? "Deposit"                : "Withdraw"}
         </button>
+
+        {txHash && (
+          <div className="flex items-center justify-between text-xs text-gray-500">
+            <a
+              href={`https://testnet.arcscan.app/tx/${txHash}`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-blue-400 hover:text-blue-300 underline truncate"
+            >
+              View on explorer ↗
+            </a>
+            <button onClick={() => { reset(); setAmount(""); }} className="text-gray-600 hover:text-gray-400 ml-3 shrink-0">
+              Reset
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
