@@ -18,6 +18,7 @@ build/
 contracts/cache/
 contracts/out/
 contracts/broadcast/
+contracts/lib/
 
 # misc
 .DS_Store
