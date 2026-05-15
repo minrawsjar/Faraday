@@ -47,11 +47,14 @@ export function RegisterPosition({ onClose, onSuccess }: { onClose: () => void; 
   }
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6 w-full max-w-md">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-[#0a1628] border border-white/10 rounded-2xl p-6 w-full max-w-md shadow-2xl shadow-black">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold">Register Position</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-white text-xl">✕</button>
+          <div>
+            <h2 className="text-lg font-bold text-white">Register Position</h2>
+            <p className="text-xs text-gray-600 mt-0.5">Add a DeFi position for Faraday to protect</p>
+          </div>
+          <button onClick={onClose} className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-500 hover:text-white transition-colors">✕</button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
