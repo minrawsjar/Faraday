@@ -5,10 +5,12 @@ const AAVE_POOL_ABI = parseAbi([
   "function getUserAccountData(address user) external view returns (uint256 totalCollateralBase, uint256 totalDebtBase, uint256 availableBorrowsBase, uint256 currentLiquidationThreshold, uint256 ltv, uint256 healthFactor)",
 ]);
 
-// Aave v3 Pool addresses per chain
+// Aave v3 Pool addresses per chain (mainnet + testnets)
 const AAVE_POOL: Record<number, `0x${string}`> = {
-  1:     "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2", // Ethereum
-  42161: "0x794a61358D6845594F94dc1DB02A252b5b4814aD", // Arbitrum
+  1:         "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2", // Ethereum mainnet
+  42161:     "0x794a61358D6845594F94dc1DB02A252b5b4814aD", // Arbitrum mainnet
+  11155111:  "0x6Ae43d3271ff6888e7Fc43Fd7321a503ff738951", // Ethereum Sepolia
+  421614:    "0xBfC91D59fdAA134A4ED45f7B584cAf96D7792Eff", // Arbitrum Sepolia
 };
 
 export interface PositionHealth {

@@ -9,9 +9,9 @@ function require(key: string): string {
 export const config = {
   chains: {
     arc:      { rpc: require("ARC_RPC_URL"),      id: 5042002 },
-    ethereum: { rpc: require("ETH_RPC_URL"),      id: 1 },
-    arbitrum: { rpc: require("ARB_RPC_URL"),      id: 42161 },
-    bnb:      { rpc: require("BNB_RPC_URL"),      id: 56 },
+    ethereum: { rpc: require("ETH_RPC_URL"),      id: 11155111 }, // Sepolia
+    arbitrum: { rpc: require("ARB_RPC_URL"),      id: 421614   }, // Arb Sepolia
+    bnb:      { rpc: require("BNB_RPC_URL"),      id: 97       }, // BNB Testnet
   },
   contracts: {
     vault:    require("FARADAY_VAULT_ADDRESS")    as `0x${string}`,
@@ -19,7 +19,7 @@ export const config = {
   },
   circle: {
     apiKey:   require("CIRCLE_API_KEY"),
-    walletId: require("CIRCLE_WALLET_ID"),
+    walletId: process.env.CIRCLE_WALLET_ID ?? "",
   },
   gemini: {
     apiKey:   require("GEMINI_API_KEY"),
