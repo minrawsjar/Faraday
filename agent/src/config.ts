@@ -8,7 +8,7 @@ function require(key: string): string {
 
 export const config = {
   chains: {
-    arc:      { rpc: require("ARC_RPC_URL"),      id: 5038930 },
+    arc:      { rpc: require("ARC_RPC_URL"),      id: 5042002 },
     ethereum: { rpc: require("ETH_RPC_URL"),      id: 1 },
     arbitrum: { rpc: require("ARB_RPC_URL"),      id: 42161 },
     bnb:      { rpc: require("BNB_RPC_URL"),      id: 56 },

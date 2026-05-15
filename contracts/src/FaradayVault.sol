@@ -26,6 +26,7 @@ contract FaradayVault {
 
     address public immutable usdc;
     address public immutable usyc;
+    address public immutable usycTeller; // USYC Teller — mint/redeem USYC from USDC
     address public immutable gateway;
     address public owner;
     address public agent;
@@ -57,9 +58,10 @@ contract FaradayVault {
     // Constructor
     // -------------------------------------------------------------------------
 
-    constructor(address _usdc, address _usyc, address _gateway, address _agent) {
+    constructor(address _usdc, address _usyc, address _usycTeller, address _gateway, address _agent) {
         usdc = _usdc;
         usyc = _usyc;
+        usycTeller = _usycTeller;
         gateway = _gateway;
         agent = _agent;
         owner = msg.sender;
@@ -181,9 +183,10 @@ contract FaradayVault {
     // Internal
     // -------------------------------------------------------------------------
 
+    // Deposit goes through the USYC Teller contract (not the USYC token directly)
     function _depositToUSYC(uint256 amount) internal returns (uint256 shares) {
-        IERC20(usdc).safeApprove(usyc, amount);
-        shares = IUSYC(usyc).deposit(amount);
+        IERC20(usdc).safeApprove(usycTeller, amount);
+        shares = IUSYC(usycTeller).deposit(amount);
     }
 
     /// @notice Redeem USYC shares to liquid USDC if the liquid buffer is insufficient.
@@ -192,13 +195,13 @@ contract FaradayVault {
         if (r.liquidUsdc >= required) return;
 
         uint256 shortfall = required - r.liquidUsdc;
-        uint256 availableUsyc = IUSYC(usyc).previewRedeem(r.usycShares);
+        uint256 availableUsyc = IUSYC(usycTeller).previewRedeem(r.usycShares);
 
         if (availableUsyc < shortfall) revert InsufficientReserve();
 
         // Redeem only what's needed
         uint256 sharesToRedeem = (r.usycShares * shortfall) / availableUsyc + 1;
-        uint256 received = IUSYC(usyc).redeem(sharesToRedeem);
+        uint256 received = IUSYC(usycTeller).redeem(sharesToRedeem);
 
         r.usycShares -= sharesToRedeem;
         r.liquidUsdc += received;

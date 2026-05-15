@@ -1,16 +1,8 @@
 import { createConfig, http } from "wagmi";
-import { mainnet, arbitrum, bsc } from "wagmi/chains";
-import { defineChain } from "viem";
+import { mainnet, arbitrum, bsc, arcTestnet } from "wagmi/chains";
 import { injected, metaMask } from "wagmi/connectors";
 
-export const arcTestnet = defineChain({
-  id: 5038930,
-  name: "ARC",
-  nativeCurrency: { name: "ARC", symbol: "ARC", decimals: 18 },
-  rpcUrls: {
-    default: { http: [process.env.NEXT_PUBLIC_ARC_RPC_URL ?? ""] },
-  },
-});
+export { arcTestnet };
 
 export const wagmiConfig = createConfig({
   chains: [arcTestnet, mainnet, arbitrum, bsc],
