@@ -12,6 +12,7 @@ export const config = {
     ethereum: { rpc: require("ETH_RPC_URL"),      id: 11155111 }, // Sepolia
     arbitrum: { rpc: require("ARB_RPC_URL"),      id: 421614   }, // Arb Sepolia
     bnb:      { rpc: require("BNB_RPC_URL"),      id: 97       }, // BNB Testnet
+    base:     { rpc: require("BASE_RPC_URL"),     id: 84532    }, // Base Sepolia
   },
   contracts: {
     vault:    require("FARADAY_VAULT_ADDRESS")    as `0x${string}`,

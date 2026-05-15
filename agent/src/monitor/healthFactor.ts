@@ -11,6 +11,7 @@ const AAVE_POOL: Record<number, `0x${string}`> = {
   42161:     "0x794a61358D6845594F94dc1DB02A252b5b4814aD", // Arbitrum mainnet
   11155111:  "0x6Ae43d3271ff6888e7Fc43Fd7321a503ff738951", // Ethereum Sepolia
   421614:    "0xBfC91D59fdAA134A4ED45f7B584cAf96D7792Eff", // Arbitrum Sepolia
+  84532:     "0x8bAB6d1b75f19e9eD9fCe8b9BD338844fF79aE27", // Base Sepolia (app.aave.com testnet market)
 };
 
 export interface PositionHealth {
