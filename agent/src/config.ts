@@ -21,8 +21,8 @@ export const config = {
     apiKey:   require("CIRCLE_API_KEY"),
     walletId: require("CIRCLE_WALLET_ID"),
   },
-  anthropic: {
-    apiKey:   require("ANTHROPIC_API_KEY"),
+  gemini: {
+    apiKey:   require("GEMINI_API_KEY"),
   },
   agent: {
     pollIntervalMs: 30_000,
