@@ -1,0 +1,14 @@
+{
+  "name": "faraday",
+  "private": true,
+  "workspaces": [
+    "agent",
+    "frontend",
+    "mcp"
+  ],
+  "scripts": {
+    "agent": "yarn workspace agent dev",
+    "frontend": "yarn workspace frontend dev",
+    "mcp": "yarn workspace mcp dev"
+  }
+}
