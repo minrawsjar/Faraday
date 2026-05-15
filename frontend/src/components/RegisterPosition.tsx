@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { parseAbi } from "viem";
 
@@ -26,10 +26,9 @@ export function RegisterPosition({ onClose, onSuccess }: { onClose: () => void; 
   const { writeContract, data: txHash, isPending } = useWriteContract();
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash: txHash });
 
-  if (isSuccess) {
-    onSuccess();
-    return null;
-  }
+  useEffect(() => {
+    if (isSuccess) onSuccess();
+  }, [isSuccess]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const selected = PROTOCOLS[protocolIdx];
 
