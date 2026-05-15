@@ -3,7 +3,8 @@
 import { useChainId } from "wagmi";
 
 const ARC_CHAIN_ID = 5042002;
-const ARC_RPC = process.env.NEXT_PUBLIC_ARC_RPC_URL!;
+// MetaMask needs an absolute URL — use the public Canteen endpoint
+const ARC_RPC_FOR_METAMASK = "https://rpc.testnet.arc.network";
 
 export function useArcNetwork() {
   const chainId = useChainId();
@@ -20,7 +21,7 @@ export function useArcNetwork() {
           chainId: "0x4CEF52",
           chainName: "ARC Testnet",
           nativeCurrency: { name: "USDC", symbol: "USDC", decimals: 6 },
-          rpcUrls: [ARC_RPC],
+          rpcUrls: [ARC_RPC_FOR_METAMASK],
           blockExplorerUrls: ["https://testnet.arcscan.app"],
         }],
       });
