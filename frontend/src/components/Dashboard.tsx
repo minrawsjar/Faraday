@@ -37,6 +37,13 @@ export function Dashboard() {
         </div>
       </div>
 
+      {showRegister && (
+        <RegisterPosition
+          onClose={() => setShowRegister(false)}
+          onSuccess={() => { setShowRegister(false); refetch(); }}
+        />
+      )}
+
       {/* Main grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="md:col-span-2">
