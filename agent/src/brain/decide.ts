@@ -3,7 +3,7 @@ import { config } from "../config.js";
 import type { PositionHealth } from "../monitor/healthFactor.js";
 
 const genAI = new GoogleGenerativeAI(config.gemini.apiKey);
-const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
 export interface Decision {
   shouldIntervene: boolean;
