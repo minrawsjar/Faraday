@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {SafeERC20} from "./libraries/SafeERC20.sol";
-import {IUSYC} from "./interfaces/IUSYC.sol";
+import {IUSYCTeller, IUSYCToken} from "./interfaces/IUSYC.sol";
 import {IGateway} from "./interfaces/IGateway.sol";
 
 /// @notice Holds each user's USDC protection reserve on ARC.
@@ -174,7 +174,7 @@ contract FaradayVault {
     function totalReserve(address user) external view returns (uint256) {
         Reserve storage r = reserves[user];
         uint256 usycValue = r.usycShares > 0
-            ? IUSYC(usyc).previewRedeem(r.usycShares)
+            ? IUSYCTeller(usycTeller).previewRedeem(r.usycShares)
             : 0;
         return r.liquidUsdc + usycValue;
     }
@@ -183,10 +183,10 @@ contract FaradayVault {
     // Internal
     // -------------------------------------------------------------------------
 
-    // Deposit goes through the USYC Teller contract (not the USYC token directly)
+    // Approve Teller, then deposit USDC → receive USYC shares back to this contract
     function _depositToUSYC(uint256 amount) internal returns (uint256 shares) {
         IERC20(usdc).safeApprove(usycTeller, amount);
-        shares = IUSYC(usycTeller).deposit(amount);
+        shares = IUSYCTeller(usycTeller).deposit(amount, address(this));
     }
 
     /// @notice Redeem USYC shares to liquid USDC if the liquid buffer is insufficient.
@@ -195,13 +195,15 @@ contract FaradayVault {
         if (r.liquidUsdc >= required) return;
 
         uint256 shortfall = required - r.liquidUsdc;
-        uint256 availableUsyc = IUSYC(usycTeller).previewRedeem(r.usycShares);
+        uint256 availableUsyc = IUSYCTeller(usycTeller).previewRedeem(r.usycShares);
 
         if (availableUsyc < shortfall) revert InsufficientReserve();
 
-        // Redeem only what's needed
+        // Redeem only what's needed, rounding up shares to cover shortfall
         uint256 sharesToRedeem = (r.usycShares * shortfall) / availableUsyc + 1;
-        uint256 received = IUSYC(usycTeller).redeem(sharesToRedeem);
+
+        // Teller pulls USYC from address(this) and sends USDC to address(this)
+        uint256 received = IUSYCTeller(usycTeller).redeem(sharesToRedeem, address(this), address(this));
 
         r.usycShares -= sharesToRedeem;
         r.liquidUsdc += received;
