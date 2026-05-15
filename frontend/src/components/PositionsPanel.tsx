@@ -51,7 +51,7 @@ export function PositionsPanel({ onRegister }: { onRegister: () => void }) {
       {/* Panel header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
         <div className="flex items-center gap-3">
-          <h2 className="font-semibold text-white">Protected Positions</h2>
+          <h2 className="font-display text-lg font-semibold text-white">Protected Positions</h2>
           {active.length > 0 && (
             <span className="text-xs bg-cyan-500/15 text-cyan-400 border border-cyan-500/25 px-2 py-0.5 rounded-full">
               {active.length}

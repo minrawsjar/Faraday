@@ -51,7 +51,7 @@ export function RegisterPosition({ onClose, onSuccess }: { onClose: () => void; 
       <div className="bg-[#0a1628] border border-white/10 rounded-2xl p-6 w-full max-w-md shadow-2xl shadow-black">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-lg font-bold text-white">Register Position</h2>
+            <h2 className="font-display text-xl font-bold text-white">Register Position</h2>
             <p className="text-xs text-gray-600 mt-0.5">Add a DeFi position for Faraday to protect</p>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-500 hover:text-white transition-colors">✕</button>

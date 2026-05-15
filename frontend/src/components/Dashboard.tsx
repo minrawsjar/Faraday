@@ -24,7 +24,7 @@ export function Dashboard() {
       {/* Header */}
       <header className="relative z-10 flex items-center justify-between px-8 py-5 border-b border-white/5 backdrop-blur-sm">
         <div className="flex items-center gap-4">
-          <span className="text-xl font-black tracking-widest text-cyan-400 uppercase">Faraday</span>
+          <span className="font-display text-xl font-black tracking-widest text-cyan-400 uppercase">Faraday</span>
           <span className="text-xs text-gray-600 font-mono bg-white/5 border border-white/10 px-2.5 py-1 rounded-lg">
             {address?.slice(0, 6)}…{address?.slice(-4)}
           </span>
@@ -49,7 +49,7 @@ export function Dashboard() {
         {/* Welcome row */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white">Protection Dashboard</h1>
+            <h1 className="font-display text-3xl font-bold text-white">Protection Dashboard</h1>
             <p className="text-sm text-gray-500 mt-0.5">Your positions are being monitored every 30 seconds</p>
           </div>
         </div>

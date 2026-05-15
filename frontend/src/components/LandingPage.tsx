@@ -87,7 +87,7 @@ export function LandingPage() {
 
       {/* ── Sticky nav ── */}
       <nav className={`fixed top-0 inset-x-0 z-50 flex items-center justify-between px-8 py-4 transition-all duration-300 ${scrolled ? "bg-black/70 backdrop-blur-xl border-b border-white/5" : ""}`}>
-        <span className="text-lg font-black tracking-widest text-cyan-400 uppercase">Faraday</span>
+        <span className="font-display text-xl font-bold tracking-widest text-cyan-400 uppercase">Faraday</span>
         <div className="flex items-center gap-6 text-sm text-gray-400">
           <a href="#how" className="hover:text-white transition-colors">How it works</a>
           <a href="#primitives" className="hover:text-white transition-colors">Architecture</a>
@@ -121,7 +121,7 @@ export function LandingPage() {
             Live on ARC Testnet · Chain 5042002
           </span>
 
-          <h1 className="text-7xl md:text-9xl font-black tracking-tighter leading-none mb-6">
+          <h1 className="font-display text-7xl md:text-9xl font-black tracking-tighter leading-none mb-6">
             <span className="bg-gradient-to-b from-white via-gray-100 to-gray-500 bg-clip-text text-transparent">
               FARADAY
             </span>
@@ -169,7 +169,7 @@ export function LandingPage() {
         <div className="relative z-10 max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <SectionLabel>The Problem</SectionLabel>
-            <h2 className="text-4xl md:text-6xl font-black tracking-tight">
+            <h2 className="font-display text-4xl md:text-6xl font-black tracking-tight">
               $19 billion liquidated.
               <br />
               <span className="text-gray-500">Most positions weren't insolvent.</span>
@@ -202,7 +202,7 @@ export function LandingPage() {
       <section id="how" className="py-32 max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
           <SectionLabel>How Faraday Works</SectionLabel>
-          <h2 className="text-4xl md:text-5xl font-black tracking-tight">
+          <h2 className="font-display text-4xl md:text-5xl font-black tracking-tight">
             Six steps. Fully autonomous.
           </h2>
         </div>
@@ -239,7 +239,7 @@ export function LandingPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <SectionLabel>Why ARC</SectionLabel>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight">
+            <h2 className="font-display text-4xl md:text-5xl font-black tracking-tight">
               Six primitives.
               <br />
               <span className="text-gray-500">Each one load-bearing.</span>
@@ -259,7 +259,7 @@ export function LandingPage() {
               <Dot style={{ bottom: "30%", right: "25%", animationDelay: "0.5s" }} />
               <div className="relative z-10">
                 <div className="text-3xl mb-3">⚡</div>
-                <h3 className="text-2xl font-black text-white mb-2">Gateway</h3>
+                <h3 className="font-display text-2xl font-black text-white mb-2">Gateway</h3>
                 <div className="text-xs text-cyan-500 bg-cyan-500/10 border border-cyan-500/20 px-2 py-1 rounded-full inline-block mb-3">Sub-500ms · Unified Balance</div>
                 <p className="text-gray-400 leading-relaxed max-w-md">
                   The core unlock. When a health factor drops below threshold, the agent pulls USDC from
@@ -336,7 +336,7 @@ export function LandingPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           <div>
             <SectionLabel>Agentic Sophistication</SectionLabel>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6">
+            <h2 className="font-display text-4xl md:text-5xl font-black tracking-tight mb-6">
               Not a bot.
               <br />
               <span className="text-cyan-400">A risk manager.</span>
@@ -389,7 +389,7 @@ export function LandingPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <SectionLabel>Trust Model</SectionLabel>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight">
+            <h2 className="font-display text-4xl md:text-5xl font-black tracking-tight">
               The agent can't steal from you.
               <br />
               <span className="text-gray-500">That's not a promise — it's math.</span>
@@ -440,7 +440,7 @@ export function LandingPage() {
           />
         </div>
         <div className="relative z-10 flex flex-col items-center text-center px-6">
-          <h2 className="text-5xl md:text-7xl font-black tracking-tighter mb-6">
+          <h2 className="font-display text-5xl md:text-7xl font-black tracking-tighter mb-6">
             Stop watching your
             <br />
             <span className="text-cyan-400">health factor.</span>

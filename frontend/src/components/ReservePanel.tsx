@@ -91,7 +91,7 @@ export function ReservePanel() {
   return (
     <div className="rounded-2xl border border-white/8 bg-white/[0.02] backdrop-blur-sm overflow-hidden">
       <div className="px-6 py-4 border-b border-white/5">
-        <h2 className="font-semibold text-white">Protection Reserve</h2>
+        <h2 className="font-display text-lg font-semibold text-white">Protection Reserve</h2>
       </div>
 
       <div className="px-6 py-5 space-y-5">
