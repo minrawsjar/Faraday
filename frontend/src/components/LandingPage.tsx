@@ -5,6 +5,7 @@ import { useConnect } from "wagmi";
 import { injected } from "wagmi/connectors";
 import { Lightning } from "./Lightning";
 import { Cubes } from "./Cubes";
+import { FaradayStack } from "./FaradayStack";
 
 // ── Glow bento card ─────────────────────────────────────────────────────────
 function BentoCard({
@@ -87,7 +88,11 @@ export function LandingPage() {
 
       {/* ── Sticky nav ── */}
       <nav className={`fixed top-0 inset-x-0 z-50 flex items-center justify-between px-8 py-4 transition-all duration-300 ${scrolled ? "bg-black/70 backdrop-blur-xl border-b border-white/5" : ""}`}>
-        <span className="font-display text-xl font-bold tracking-widest text-cyan-400 uppercase">Faraday</span>
+        <div className="flex items-center gap-3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/image.png" alt="Faraday" className="w-9 h-9 object-contain drop-shadow-[0_0_14px_rgba(59,130,246,0.6)]" />
+          <span className="font-display text-xl font-bold tracking-widest text-cyan-400 uppercase">Faraday</span>
+        </div>
         <div className="flex items-center gap-6 text-sm text-gray-400">
           <a href="#how" className="hover:text-white transition-colors">How it works</a>
           <a href="#primitives" className="hover:text-white transition-colors">Architecture</a>
@@ -116,11 +121,6 @@ export function LandingPage() {
         </div>
 
         <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-5xl">
-          <span className="inline-flex items-center gap-2 text-xs font-semibold text-cyan-400 bg-cyan-400/10 border border-cyan-400/25 px-4 py-1.5 rounded-full tracking-widest uppercase mb-8">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-            Live on ARC Testnet · Chain 5042002
-          </span>
-
           <h1 className="font-display text-7xl md:text-9xl font-black tracking-tighter leading-none mb-6">
             <span className="bg-gradient-to-b from-white via-gray-100 to-gray-500 bg-clip-text text-transparent">
               FARADAY
@@ -133,7 +133,7 @@ export function LandingPage() {
           </p>
           <p className="text-base text-gray-500 max-w-xl mb-12">
             An autonomous AI agent that monitors your Aave, Venus & GMX positions 24/7
-            and moves collateral cross-chain in <strong className="text-white">under 500ms</strong> — before
+            and moves collateral cross-chain in <strong className="text-white">under 500ms</strong>, before
             liquidation engines fire.
           </p>
 
@@ -160,7 +160,7 @@ export function LandingPage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════════
-          THE PROBLEM — stats strip with Cubes bg
+          THE PROBLEM,stats strip with Cubes bg
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative py-32 overflow-hidden">
         <div className="absolute inset-0 opacity-20">
@@ -175,8 +175,8 @@ export function LandingPage() {
               <span className="text-gray-500">Most positions weren't insolvent.</span>
             </h2>
             <p className="mt-6 text-gray-400 max-w-2xl mx-auto text-lg">
-              In the October 2025 flash crash, billions in DeFi positions were liquidated not because they were underwater —
-              but because collateral couldn't move fast enough. Traditional bridges take 5–20 minutes.
+              In the October 2025 flash crash, billions in DeFi positions were liquidated not because they were underwater,
+              but because collateral couldn't move fast enough. Traditional bridges take 5 to 20 minutes.
               Liquidation engines fire in <span className="text-white font-semibold">seconds.</span>
             </p>
           </div>
@@ -233,7 +233,29 @@ export function LandingPage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════════
-          WHY ARC — magic bento primitives
+          ARCHITECTURE,isometric stack diagram
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="py-32 max-w-6xl mx-auto px-6">
+        <div className="text-center mb-16">
+          <SectionLabel>Architecture</SectionLabel>
+          <h2 className="font-display text-5xl md:text-6xl font-black mt-4 mb-4">
+            Three layers.
+            <span className="block bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+              One protection loop.
+            </span>
+          </h2>
+          <p className="text-gray-400 max-w-2xl mx-auto">
+            Faraday is a stack. ARC primitives at the base, the agent in the middle,
+            user positions at the top. Every layer is independently auditable.
+          </p>
+        </div>
+        <div className="flex items-center justify-center">
+          <FaradayStack />
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          WHY ARC,magic bento primitives
       ══════════════════════════════════════════════════════════════════════ */}
       <section id="primitives" className="py-32 bg-black/30">
         <div className="max-w-6xl mx-auto px-6">
@@ -253,7 +275,7 @@ export function LandingPage() {
           {/* Big bento grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-auto">
 
-            {/* Gateway — large */}
+            {/* Gateway,large */}
             <BentoCard glowColor="cyan" span="md:col-span-2 md:row-span-2" className="p-8 relative overflow-hidden min-h-[280px]">
               <Dot style={{ top: "20%", right: "15%", animationDelay: "0s" }} />
               <Dot style={{ bottom: "30%", right: "25%", animationDelay: "0.5s" }} />
@@ -263,7 +285,7 @@ export function LandingPage() {
                 <div className="text-xs text-cyan-500 bg-cyan-500/10 border border-cyan-500/20 px-2 py-1 rounded-full inline-block mb-3">Sub-500ms · Unified Balance</div>
                 <p className="text-gray-400 leading-relaxed max-w-md">
                   The core unlock. When a health factor drops below threshold, the agent pulls USDC from
-                  wherever the user holds it across all chains and tops up collateral — before the liquidation
+                  wherever the user holds it across all chains and tops up collateral, before the liquidation
                   engine fires. Without sub-500ms transfer, this is physically impossible. No other bridge gives you this.
                 </p>
               </div>
@@ -286,7 +308,7 @@ export function LandingPage() {
               <h3 className="font-bold text-white mb-1">USYC</h3>
               <div className="text-xs text-green-400 mb-2">~5% APY on idle reserve</div>
               <p className="text-xs text-gray-400 leading-relaxed">
-                95% of the time nothing happens. Your protection reserve earns yield in USYC — it pays for itself.
+                95% of the time nothing happens. Your protection reserve earns yield in USYC. It pays for itself.
               </p>
             </BentoCard>
 
@@ -306,11 +328,11 @@ export function LandingPage() {
               <h3 className="font-bold text-white mb-1">Circle Wallets</h3>
               <div className="text-xs text-orange-400 mb-2">Scoped permissions</div>
               <p className="text-xs text-gray-400 leading-relaxed">
-                Agent can only add collateral or repay debt — mathematically incapable of withdrawing your funds.
+                Agent can only add collateral or repay debt. Mathematically incapable of withdrawing your funds.
               </p>
             </BentoCard>
 
-            {/* Contracts — wide */}
+            {/* Contracts,wide */}
             <BentoCard glowColor="cyan" span="md:col-span-2" className="p-6">
               <div className="flex items-center gap-6">
                 <div className="text-3xl shrink-0">📜</div>
@@ -319,7 +341,7 @@ export function LandingPage() {
                   <div className="text-xs text-cyan-500 mb-2">Auditable · Deterministic · Trustless</div>
                   <p className="text-sm text-gray-400 leading-relaxed">
                     HF thresholds, intervention logic, and permission scope are all on-chain. The agent can't go rogue
-                    because its behaviour is constrained by smart contract rules — not by trusting us.
+                    because its behaviour is constrained by smart contract rules, not by trusting us.
                   </p>
                 </div>
               </div>
@@ -343,15 +365,15 @@ export function LandingPage() {
             </h2>
             <p className="text-gray-400 leading-relaxed mb-6">
               A simple if/then script is AI-flavored automation. Faraday's Gemini-powered brain
-              actually <em>decides</em> — reading market volatility, collateral correlation, and
+              actually <em>decides</em>, reading market volatility, collateral correlation, and
               liquidation momentum before acting.
             </p>
             <ul className="space-y-3">
               {[
                 "Dynamic threshold adjustment based on market volatility",
-                "Predicts HF trajectory — intervenes before threshold breach",
+                "Predicts HF trajectory, intervenes before threshold breach",
                 "Decides which reserve to draw from (liquid vs USYC)",
-                "Deterministic fallback if AI call fails — never goes dark",
+                "Deterministic fallback if AI call fails, never goes dark",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm text-gray-300">
                   <span className="text-cyan-400 shrink-0 mt-0.5">✓</span>
@@ -392,7 +414,7 @@ export function LandingPage() {
             <h2 className="font-display text-4xl md:text-5xl font-black tracking-tight">
               The agent can't steal from you.
               <br />
-              <span className="text-gray-500">That's not a promise — it's math.</span>
+              <span className="text-gray-500">That's not a promise. It's math.</span>
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -412,7 +434,7 @@ export function LandingPage() {
               {
                 icon: "🌐",
                 title: "MCP-composable",
-                desc: "Faraday exposes an MCP server — other AI agents can use it as a protection primitive without rebuilding the infrastructure.",
+                desc: "Faraday exposes an MCP server. Other AI agents can use it as a protection primitive without rebuilding the infrastructure.",
                 color: "violet",
               },
             ].map((item) => (
@@ -427,7 +449,7 @@ export function LandingPage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════════
-          CTA — bottom section with Cubes
+          CTA,bottom section with Cubes
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative py-40 overflow-hidden">
         <div className="absolute inset-0 opacity-30">
@@ -462,7 +484,11 @@ export function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-white/5 py-8 px-8">
         <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4 text-xs text-gray-700">
-          <span className="font-bold tracking-widest uppercase text-gray-600">Faraday</span>
+          <div className="flex items-center gap-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/image.png" alt="Faraday" className="w-6 h-6 object-contain opacity-70" />
+            <span className="font-bold tracking-widest uppercase text-gray-600">Faraday</span>
+          </div>
           <span>Built on ARC · Powered by Circle Gateway, CCTP, USYC, Paymaster & Wallets</span>
           <div className="flex gap-4">
             <a href="https://testnet.arcscan.app/address/0xD12BEe576b9402eaB04ca8d9EB73691B72850A4E"

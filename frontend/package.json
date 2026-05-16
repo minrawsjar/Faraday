@@ -10,12 +10,18 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.100.10",
+    "@types/three": "^0.184.1",
+    "@types/topojson-client": "^3.1.5",
     "gsap": "^3.15.0",
     "next": "16.2.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-globe.gl": "^2.37.1",
+    "three": "^0.184.0",
+    "topojson-client": "^3.1.0",
     "viem": "^2.49.2",
-    "wagmi": "^3.6.15"
+    "wagmi": "^3.6.15",
+    "world-atlas": "^2.0.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

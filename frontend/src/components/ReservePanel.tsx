@@ -10,6 +10,7 @@ import { useArcNetwork } from "@/hooks/useArcNetwork";
 
 const VAULT_ADDRESS = process.env.NEXT_PUBLIC_VAULT_ADDRESS  as `0x${string}`;
 const USDC_ADDRESS  = process.env.NEXT_PUBLIC_USDC_ADDRESS   as `0x${string}`;
+const MIN_LIQUID_BUFFER = 200;
 
 const VAULT_ABI = parseAbi([
   "function totalReserve(address user) external view returns (uint256)",
@@ -17,12 +18,24 @@ const VAULT_ABI = parseAbi([
   "function deposit(uint256 amount) external",
   "function withdraw(uint256 amount) external",
 ]);
-
 const ERC20_ABI = parseAbi([
   "function balanceOf(address) external view returns (uint256)",
   "function allowance(address owner, address spender) external view returns (uint256)",
   "function approve(address spender, uint256 amount) external returns (bool)",
 ]);
+
+function splitPreview(currentLiquidFloat: number, depositAmount: number) {
+  const space = Math.max(0, MIN_LIQUID_BUFFER - currentLiquidFloat);
+  const toLiquid = Math.min(depositAmount, space);
+  const toUsyc = Math.max(0, depositAmount - toLiquid);
+  return { toLiquid, toUsyc };
+}
+
+const glass = {
+  background: "linear-gradient(127deg, rgba(6,11,40,0.94) 0%, rgba(10,14,35,0.6) 100%)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  backdropFilter: "blur(40px)",
+};
 
 export function ReservePanel() {
   const { address } = useAccount();
@@ -61,10 +74,7 @@ export function ReservePanel() {
     }
   }, [isConfirmed]); // eslint-disable-line
 
-  const parsedAmount = (() => {
-    try { return amount ? parseUnits(amount, 6) : 0n; } catch { return 0n; }
-  })();
-
+  const parsedAmount = (() => { try { return amount ? parseUnits(amount, 6) : 0n; } catch { return 0n; } })();
   const needsApproval = mode === "deposit" && parsedAmount > 0n && (allowance ?? 0n) < parsedAmount;
 
   function handleAction() {
@@ -79,61 +89,79 @@ export function ReservePanel() {
     }
   }
 
-  const liquidUsdc = reserves ? (reserves as [bigint, bigint])[0] : 0n;
+  const liquidUsdc  = reserves ? (reserves as [bigint, bigint])[0] : 0n;
   const usycShares  = reserves ? (reserves as [bigint, bigint])[1] : 0n;
   const totalFloat  = parseFloat(formatUnits(totalReserve ?? 0n, 6));
   const liquidFloat = parseFloat(formatUnits(liquidUsdc, 6));
+  const usycFloat   = parseFloat(formatUnits(usycShares, 6));
   const walletFloat = parseFloat(formatUnits(usdcBalance ?? 0n, 6));
+  const liquidPct   = totalFloat > 0 ? (liquidFloat / totalFloat) * 100 : 0;
+  const usycPct     = totalFloat > 0 ? (usycFloat  / totalFloat) * 100 : 0;
 
-  // Reserve health bar (out of, say, 1000 USDC as "full")
-  const reservePct = Math.min((totalFloat / 100) * 100, 100);
+  const depositAmountFloat = parseFloat(amount) || 0;
+  const preview = splitPreview(liquidFloat, depositAmountFloat);
 
   return (
-    <div className="rounded-2xl border border-white/8 bg-white/[0.02] backdrop-blur-sm overflow-hidden">
-      <div className="px-6 py-4 border-b border-white/5">
-        <h2 className="font-display text-lg font-semibold text-white">Protection Reserve</h2>
-      </div>
+    <div className="rounded-2xl overflow-hidden" style={glass}>
 
-      <div className="px-6 py-5 space-y-5">
-        {!onARC && (
-          <div className="p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/25 text-yellow-400 text-xs">
-            Switch to ARC Testnet to manage reserve.{" "}
-            <button onClick={switchToARC} className="underline">Switch now</button>
+      {/* Vault header with gradient */}
+      <div className="px-6 pt-6 pb-5"
+        style={{ background: "linear-gradient(135deg, rgba(6,182,212,0.08) 0%, rgba(59,130,246,0.05) 100%)" }}>
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-1">Protection Vault</p>
+            <p className="text-4xl font-black text-white tabular-nums">${totalFloat.toFixed(2)}</p>
+            <p className="text-xs text-white/30 mt-1">total reserve · ARC network</p>
           </div>
-        )}
+          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full mt-1"
+            style={{ background: "rgba(16,185,129,0.15)", border: "1px solid rgba(16,185,129,0.3)", color: "#34d399" }}>
+            ~5% APY
+          </span>
+        </div>
 
-        {/* Reserve overview */}
-        <div className="space-y-3">
-          <div className="flex items-end justify-between">
-            <span className="text-xs text-gray-500">Total reserve</span>
-            <span className="text-2xl font-black text-white">${totalFloat.toFixed(2)}</span>
+        {/* Split bar */}
+        <div className="space-y-2">
+          <div className="h-2 rounded-full overflow-hidden flex" style={{ background: "rgba(255,255,255,0.06)" }}>
+            <div className="h-full transition-all duration-700"
+              style={{ width: `${liquidPct}%`, background: "linear-gradient(90deg, #3b82f6, #60a5fa)" }} />
+            <div className="h-full transition-all duration-700"
+              style={{ width: `${usycPct}%`, background: "linear-gradient(90deg, #06b6d4, #22d3ee)" }} />
           </div>
-          {/* Health bar */}
-          <div className="h-2 bg-white/8 rounded-full overflow-hidden">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-700"
-              style={{ width: `${reservePct}%` }}
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <div className="bg-white/5 rounded-xl p-3 border border-white/8">
-              <div className="text-[10px] text-gray-600 mb-1">Liquid USDC</div>
-              <div className="text-sm font-bold text-white">${liquidFloat.toFixed(2)}</div>
+          <div className="flex justify-between">
+            <div className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+              <span className="text-[10px] text-white/40">Liquid ${liquidFloat.toFixed(2)}</span>
             </div>
-            <div className="bg-white/5 rounded-xl p-3 border border-white/8">
-              <div className="text-[10px] text-gray-600 mb-1">In USYC</div>
-              <div className="text-sm font-bold text-cyan-400">{parseFloat(formatUnits(usycShares, 6)).toFixed(4)}</div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+              <span className="text-[10px] text-white/40">USYC {usycFloat.toFixed(4)}</span>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Mode toggle */}
-        <div className="flex rounded-xl border border-white/8 overflow-hidden bg-white/[0.02]">
+      {/* Divider */}
+      <div style={{ height: "1px", background: "rgba(255,255,255,0.05)" }} />
+
+      <div className="px-6 py-5 space-y-4">
+
+        {!onARC && (
+          <div className="p-3 rounded-xl text-xs"
+            style={{ background: "rgba(234,179,8,0.08)", border: "1px solid rgba(234,179,8,0.2)", color: "#facc15" }}>
+            Switch to ARC Testnet to manage vault.{" "}
+            <button onClick={switchToARC} className="underline font-semibold">Switch →</button>
+          </div>
+        )}
+
+        {/* Mode tabs */}
+        <div className="flex rounded-xl overflow-hidden p-0.5" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
           {(["deposit","withdraw"] as const).map((m) => (
             <button key={m} onClick={() => setMode(m)}
-              className={`flex-1 py-2 text-xs font-semibold capitalize transition-all ${
-                mode === m ? "bg-cyan-500/20 text-cyan-400" : "text-gray-600 hover:text-gray-400"
-              }`}>
+              className="flex-1 py-2 text-xs font-semibold capitalize transition-all rounded-lg"
+              style={mode === m
+                ? { background: "linear-gradient(135deg, rgba(6,182,212,0.2), rgba(59,130,246,0.2))", color: "#67e8f9", border: "1px solid rgba(6,182,212,0.2)" }
+                : { color: "rgba(255,255,255,0.3)" }
+              }>
               {m}
             </button>
           ))}
@@ -145,20 +173,41 @@ export function ReservePanel() {
             <input
               type="number" placeholder="0.00" value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-700 focus:outline-none focus:border-cyan-500/50 transition-colors pr-20"
+              className="w-full rounded-xl px-4 py-3.5 text-sm text-white placeholder-white/20 focus:outline-none transition-all pr-20"
+              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
+              onFocus={e => (e.target.style.borderColor = "rgba(6,182,212,0.4)")}
+              onBlur={e => (e.target.style.borderColor = "rgba(255,255,255,0.08)")}
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-              <span className="text-xs text-gray-600">USDC</span>
+              <span className="text-xs text-white/30">USDC</span>
               {mode === "deposit" && usdcBalance != null && usdcBalance > 0n && (
                 <button onClick={() => setAmount(formatUnits(usdcBalance, 6))}
-                  className="text-[10px] text-cyan-500 hover:text-cyan-400 font-bold bg-cyan-500/10 px-1.5 py-0.5 rounded transition-colors">
+                  className="text-[10px] font-bold px-1.5 py-0.5 rounded transition-colors"
+                  style={{ background: "rgba(6,182,212,0.15)", color: "#67e8f9", border: "1px solid rgba(6,182,212,0.2)" }}>
                   MAX
                 </button>
               )}
             </div>
           </div>
+
           {mode === "deposit" && usdcBalance != null && (
-            <p className="text-xs text-gray-700">Wallet: {walletFloat.toFixed(2)} USDC</p>
+            <p className="text-xs text-white/25">Wallet balance: {walletFloat.toFixed(2)} USDC</p>
+          )}
+
+          {/* Deposit split preview */}
+          {mode === "deposit" && depositAmountFloat > 0 && (
+            <div className="rounded-xl p-3 space-y-2"
+              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+              <p className="text-[10px] text-white/30 uppercase tracking-widest">Split preview</p>
+              <div className="flex justify-between text-xs">
+                <span className="text-blue-400">→ Stays liquid (buffer)</span>
+                <span className="text-white font-mono font-bold">${preview.toLiquid.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-xs">
+                <span className="text-cyan-400">→ Deposited to USYC</span>
+                <span className="text-cyan-300 font-mono font-bold">${preview.toUsyc.toFixed(2)}</span>
+              </div>
+            </div>
           )}
         </div>
 
@@ -166,23 +215,23 @@ export function ReservePanel() {
         <button
           onClick={handleAction}
           disabled={onARC && (!parsedAmount || isPending || isConfirming)}
-          className="w-full py-3 rounded-xl font-bold text-sm transition-all duration-200 disabled:opacity-40
-            bg-cyan-500 hover:bg-cyan-400 text-black shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)]"
+          className="w-full py-3.5 rounded-xl font-bold text-sm transition-all duration-200 disabled:opacity-40 text-white"
+          style={{ background: "linear-gradient(135deg, #0891b2, #2563eb)", boxShadow: "0 0 24px rgba(6,182,212,0.25)" }}
         >
           {!onARC ? "Switch to ARC Testnet" :
            isPending ? "Confirm in wallet…" :
            isConfirming ? "Confirming…" :
            needsApproval ? "Approve USDC" :
-           mode === "deposit" ? "Deposit" : "Withdraw"}
+           mode === "deposit" ? "Deposit to Vault" : "Withdraw"}
         </button>
 
         {txHash && (
           <div className="flex items-center justify-between text-xs">
             <a href={`https://testnet.arcscan.app/tx/${txHash}`} target="_blank" rel="noreferrer"
-              className="text-cyan-500 hover:text-cyan-400 underline truncate">
-              View on ARC explorer ↗
+              className="text-cyan-400 hover:text-cyan-300 underline truncate">
+              View on ARC ↗
             </a>
-            <button onClick={() => { reset(); setAmount(""); }} className="text-gray-700 hover:text-gray-500 ml-3 shrink-0">
+            <button onClick={() => { reset(); setAmount(""); }} className="text-white/25 hover:text-white/50 ml-3 shrink-0">
               Reset
             </button>
           </div>

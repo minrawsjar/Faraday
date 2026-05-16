@@ -27,8 +27,13 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Faraday — DeFi Liquidation Protection",
+  title: "Faraday · DeFi Liquidation Protection",
   description: "Autonomous cross-chain agent that protects your DeFi positions from liquidation",
+  icons: {
+    icon: "/image.png",
+    shortcut: "/image.png",
+    apple: "/image.png",
+  },
 };
 
 export default function RootLayout({
