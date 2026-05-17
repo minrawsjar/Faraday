@@ -1,9 +1,12 @@
 import "dotenv/config";
 import { createPublicClient, http, parseAbi } from "viem";
+import { privateKeyToAccount } from "viem/accounts";
 import { config } from "./config.js";
 import { fetchAaveHealth } from "./monitor/healthFactor.js";
+import { getAaveDebtTokens } from "./monitor/aaveDebt.js";
 import { decide } from "./brain/decide.js";
 import { executeProtection } from "./executor/protect.js";
+import { repayOnChain } from "./executor/repayOnChain.js";
 import type { PositionHealth } from "./monitor/healthFactor.js";
 
 const REGISTRY_ABI = parseAbi([
@@ -76,16 +79,41 @@ async function runLoop() {
         const hf = Number(position.healthFactor) / 1e18;
         const trigger = Number(position.triggerHF) / 1e18;
 
-        if (hf > trigger * 1.2) continue; // well above threshold, skip Claude call
+        if (hf > trigger * 1.2) continue; // well above threshold, skip AI call
 
-        const decision = await decide(position);
+        const agentAddress = privateKeyToAccount(
+          process.env.AGENT_PRIVATE_KEY as `0x${string}`
+        ).address;
+
+        const repayUsd = Math.max(0,
+          (Number(position.totalDebtBase) / 1e8) *
+          (Number(position.targetHF) / 1e18) /
+          (Number(position.liquidationThreshold) / 10000) -
+          Number(position.totalCollateralBase) / 1e8
+        );
+
+        // Discover what the user owes and whether agent can cover it directly
+        const debtTokens = await getAaveDebtTokens(
+          position.userAddress,
+          agentAddress,
+          position.chainId,
+          repayUsd
+        );
+
+        const decision = await decide(position, debtTokens);
         console.log(
           `[Faraday] Position ${position.positionId} | HF: ${hf.toFixed(3)} | ` +
           `Urgency: ${decision.urgency} | Intervene: ${decision.shouldIntervene} | ` +
-          `Reason: ${decision.reasoning}`
+          `Strategy: ${decision.strategy} | Reason: ${decision.reasoning}`
         );
 
-        if (decision.shouldIntervene && decision.usdcAmount > 0n) {
+        if (!decision.shouldIntervene || decision.usdcAmount === 0n) continue;
+
+        if (decision.strategy === "direct_repay" && decision.debtToken) {
+          // Agent has the token on the destination chain — repay Aave directly
+          await repayOnChain(position.userAddress, position.chainId, decision.debtToken);
+        } else {
+          // Fall back to vault funds bridged via ARC Gateway
           await executeProtection(position, decision.usdcAmount);
         }
       }

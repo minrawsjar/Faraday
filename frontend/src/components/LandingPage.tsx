@@ -491,11 +491,11 @@ export function LandingPage() {
           </div>
           <span>Built on ARC · Powered by Circle Gateway, CCTP, USYC, Paymaster & Wallets</span>
           <div className="flex gap-4">
-            <a href="https://testnet.arcscan.app/address/0xD12BEe576b9402eaB04ca8d9EB73691B72850A4E"
+            <a href="https://testnet.arcscan.app/address/0xD109399A31D3b632841A1C3f92060F362467bf59"
               target="_blank" rel="noreferrer" className="hover:text-gray-400 transition-colors">
               Contract ↗
             </a>
-            <a href="https://testnet.arcscan.app/address/0x1109ae5a33532A450487d1E1C1387bDE1DC35235"
+            <a href="https://testnet.arcscan.app/address/0xcD22999397FfEd77c891E8413A349087060c33d1"
               target="_blank" rel="noreferrer" className="hover:text-gray-400 transition-colors">
               Registry ↗
             </a>

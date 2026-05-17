@@ -151,8 +151,10 @@ contract FaradayVault {
 
         r.liquidUsdc -= usdcAmount;
 
-        IERC20(usdc).safeApprove(gateway, usdcAmount);
-        IGateway(gateway).transfer(usdc, usdcAmount, destinationChainId, recipient);
+        // Transfer USDC to the agent's EOA. The agent immediately deposits it into the
+        // Circle Gateway via the AppKit SDK (deposit + spend). USDC only sits in the
+        // agent wallet for the ~2 seconds it takes to submit the deposit transaction.
+        IERC20(usdc).safeTransfer(msg.sender, usdcAmount);
 
         emit ProtectionExecuted(user, usdcAmount, destinationChainId, recipient);
     }
@@ -164,6 +166,14 @@ contract FaradayVault {
     function setAgent(address _agent) external onlyOwner {
         agent = _agent;
         emit AgentUpdated(_agent);
+    }
+
+    /// @notice Credit raw USDC already in the vault into a user's reserve mapping.
+    /// Use this to rescue USDC that was sent directly (bypassing deposit()) so it
+    /// becomes usable by the protection agent.
+    function creditReserve(address user, uint256 amount) external onlyOwner {
+        reserves[user].liquidUsdc += amount;
+        emit Deposited(user, amount, 0);
     }
 
     // -------------------------------------------------------------------------

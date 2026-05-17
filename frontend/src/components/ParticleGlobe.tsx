@@ -3,19 +3,73 @@
 import { useEffect, useRef } from "react";
 
 const CHAIN_ARCS = [
+  // Singapore hub
   { startLat:  1.35, startLng: 103.82, endLat: 37.77, endLng: -122.41, color: "#06b6d4" },
   { startLat:  1.35, startLng: 103.82, endLat: 51.50, endLng:   -0.12, color: "#3b82f6" },
   { startLat:  1.35, startLng: 103.82, endLat: 40.71, endLng:  -74.00, color: "#8b5cf6" },
   { startLat:  1.35, startLng: 103.82, endLat: 22.30, endLng:  114.17, color: "#f59e0b" },
+  { startLat:  1.35, startLng: 103.82, endLat: 19.08, endLng:   72.88, color: "#06b6d4" },
+  { startLat:  1.35, startLng: 103.82, endLat: 35.68, endLng:  139.69, color: "#22d3ee" },
+  { startLat:  1.35, startLng: 103.82, endLat:-33.87, endLng:  151.21, color: "#3b82f6" },
+  // San Francisco
   { startLat: 37.77, startLng:-122.41, endLat:  1.35, endLng:  103.82, color: "#06b6d4" },
+  { startLat: 37.77, startLng:-122.41, endLat: 51.50, endLng:   -0.12, color: "#8b5cf6" },
+  { startLat: 37.77, startLng:-122.41, endLat: 40.71, endLng:  -74.00, color: "#3b82f6" },
+  { startLat: 37.77, startLng:-122.41, endLat: 19.08, endLng:   72.88, color: "#f59e0b" },
+  { startLat: 37.77, startLng:-122.41, endLat:-23.55, endLng:  -46.63, color: "#10b981" },
+  // London
+  { startLat: 51.50, startLng:  -0.12, endLat: 19.08, endLng:   72.88, color: "#8b5cf6" },
+  { startLat: 51.50, startLng:  -0.12, endLat: 25.20, endLng:   55.27, color: "#f59e0b" },
+  { startLat: 51.50, startLng:  -0.12, endLat: 40.71, endLng:  -74.00, color: "#3b82f6" },
+  { startLat: 51.50, startLng:  -0.12, endLat: 50.11, endLng:    8.68, color: "#60a5fa" },
+  { startLat: 51.50, startLng:  -0.12, endLat:-23.55, endLng:  -46.63, color: "#10b981" },
+  // Mumbai, India
+  { startLat: 19.08, startLng:  72.88, endLat: 51.50, endLng:   -0.12, color: "#f59e0b" },
+  { startLat: 19.08, startLng:  72.88, endLat: 25.20, endLng:   55.27, color: "#f97316" },
+  { startLat: 19.08, startLng:  72.88, endLat: 22.30, endLng:  114.17, color: "#f59e0b" },
+  { startLat: 19.08, startLng:  72.88, endLat: 12.97, endLng:   77.59, color: "#fbbf24" },
+  { startLat: 19.08, startLng:  72.88, endLat: 37.57, endLng:  126.98, color: "#f59e0b" },
+  // Bangalore, India
+  { startLat: 12.97, startLng:  77.59, endLat:  1.35, endLng:  103.82, color: "#f59e0b" },
+  { startLat: 12.97, startLng:  77.59, endLat: 37.77, endLng: -122.41, color: "#f97316" },
+  { startLat: 12.97, startLng:  77.59, endLat: 25.20, endLng:   55.27, color: "#fbbf24" },
+  // Dubai
+  { startLat: 25.20, startLng:  55.27, endLat: 40.71, endLng:  -74.00, color: "#f59e0b" },
+  { startLat: 25.20, startLng:  55.27, endLat: 22.30, endLng:  114.17, color: "#06b6d4" },
+  { startLat: 25.20, startLng:  55.27, endLat: 37.77, endLng: -122.41, color: "#8b5cf6" },
+  // Tokyo
+  { startLat: 35.68, startLng: 139.69, endLat: 37.77, endLng: -122.41, color: "#22d3ee" },
+  { startLat: 35.68, startLng: 139.69, endLat: 40.71, endLng:  -74.00, color: "#06b6d4" },
+  { startLat: 35.68, startLng: 139.69, endLat: 37.57, endLng:  126.98, color: "#3b82f6" },
+  // Sydney
+  { startLat:-33.87, startLng: 151.21, endLat: 37.77, endLng: -122.41, color: "#10b981" },
+  { startLat:-33.87, startLng: 151.21, endLat: 22.30, endLng:  114.17, color: "#06b6d4" },
+  { startLat:-33.87, startLng: 151.21, endLat: 19.08, endLng:   72.88, color: "#f59e0b" },
+  // New York
+  { startLat: 40.71, startLng: -74.00, endLat: 50.11, endLng:    8.68, color: "#8b5cf6" },
+  { startLat: 40.71, startLng: -74.00, endLat: 19.08, endLng:   72.88, color: "#f59e0b" },
+  // São Paulo
+  { startLat:-23.55, startLng: -46.63, endLat: 40.71, endLng:  -74.00, color: "#10b981" },
+  { startLat:-23.55, startLng: -46.63, endLat: 51.50, endLng:   -0.12, color: "#10b981" },
+  // Seoul
+  { startLat: 37.57, startLng: 126.98, endLat: 37.77, endLng: -122.41, color: "#22d3ee" },
+  { startLat: 37.57, startLng: 126.98, endLat:  1.35, endLng:  103.82, color: "#3b82f6" },
 ];
 
 const CHAIN_POINTS = [
   { lat:  1.35, lng: 103.82, color: "#06b6d4", size: 0.8 },
-  { lat: 37.77, lng:-122.41, color: "#3b82f6", size: 0.5 },
-  { lat: 51.50, lng:  -0.12, color: "#8b5cf6", size: 0.5 },
-  { lat: 40.71, lng: -74.00, color: "#06b6d4", size: 0.5 },
-  { lat: 22.30, lng: 114.17, color: "#f59e0b", size: 0.5 },
+  { lat: 37.77, lng:-122.41, color: "#3b82f6", size: 0.6 },
+  { lat: 51.50, lng:  -0.12, color: "#8b5cf6", size: 0.6 },
+  { lat: 40.71, lng: -74.00, color: "#06b6d4", size: 0.6 },
+  { lat: 22.30, lng: 114.17, color: "#f59e0b", size: 0.6 },
+  { lat: 19.08, lng:  72.88, color: "#f59e0b", size: 0.8 },
+  { lat: 12.97, lng:  77.59, color: "#fbbf24", size: 0.6 },
+  { lat: 35.68, lng: 139.69, color: "#22d3ee", size: 0.6 },
+  { lat: 25.20, lng:  55.27, color: "#f97316", size: 0.6 },
+  { lat:-33.87, lng: 151.21, color: "#10b981", size: 0.5 },
+  { lat: 50.11, lng:   8.68, color: "#60a5fa", size: 0.5 },
+  { lat:-23.55, lng: -46.63, color: "#10b981", size: 0.5 },
+  { lat: 37.57, lng: 126.98, color: "#22d3ee", size: 0.5 },
 ];
 
 export function ParticleGlobe({ className }: { className?: string }) {

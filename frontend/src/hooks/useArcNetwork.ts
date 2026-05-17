@@ -19,35 +19,27 @@ export function useArcNetwork() {
   const chainId = useChainId();
   const onARC = chainId === ARC_CHAIN_ID;
 
-  /** Switch to ARC chain, adding it first if the wallet doesn't know about it yet. */
+  /** Switch to ARC chain, adding/updating it in the wallet first.
+   * Always calls wallet_addEthereumChain directly — MetaMask will add+switch
+   * if the chain isn't known, or update+switch if it already exists.
+   * Note: MetaMask requires decimals === 18 for nativeCurrency regardless of
+   * the chain's actual precision. */
   async function switchToARC() {
     const eth = getEthereum();
-    if (!eth) return;
+    if (!eth) { console.warn("No injected wallet found"); return; }
     try {
       await eth.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: ARC_CHAIN_ID_HEX }],
+        method: "wallet_addEthereumChain",
+        params: [{
+          chainId: ARC_CHAIN_ID_HEX,
+          chainName: "ARC Testnet",
+          nativeCurrency: { name: "USD Coin", symbol: "USDC", decimals: 18 },
+          rpcUrls: [ARC_RPC_FOR_METAMASK],
+          blockExplorerUrls: ["https://testnet.arcscan.app"],
+        }],
       });
-    } catch (switchErr) {
-      // 4902 = chain not added yet; add it (wallet will also switch automatically)
-      if ((switchErr as { code?: number }).code === 4902) {
-        try {
-          await eth.request({
-            method: "wallet_addEthereumChain",
-            params: [{
-              chainId: ARC_CHAIN_ID_HEX,
-              chainName: "ARC Testnet",
-              nativeCurrency: { name: "USDC", symbol: "USDC", decimals: 6 },
-              rpcUrls: [ARC_RPC_FOR_METAMASK],
-              blockExplorerUrls: ["https://testnet.arcscan.app"],
-            }],
-          });
-        } catch (addErr) {
-          console.error("Failed to add ARC network:", addErr);
-        }
-      } else {
-        console.error("Failed to switch to ARC network:", switchErr);
-      }
+    } catch (err) {
+      console.error("Failed to add/switch to ARC network:", err);
     }
   }
 
@@ -60,16 +52,12 @@ export function useArcNetwork() {
     const eth = getEthereum();
     if (!eth) return;
     try {
-      // Switch away (to Sepolia) and back, then re-add to force the new RPC config
-      try {
-        await eth.request({ method: "wallet_switchEthereumChain", params: [{ chainId: "0xaa36a7" }] });
-      } catch { /* ignore — user may not have Sepolia */ }
       await eth.request({
         method: "wallet_addEthereumChain",
         params: [{
           chainId: ARC_CHAIN_ID_HEX,
           chainName: "ARC Testnet",
-          nativeCurrency: { name: "USDC", symbol: "USDC", decimals: 6 },
+          nativeCurrency: { name: "USD Coin", symbol: "USDC", decimals: 18 },
           rpcUrls: [ARC_RPC_FOR_METAMASK],
           blockExplorerUrls: ["https://testnet.arcscan.app"],
         }],

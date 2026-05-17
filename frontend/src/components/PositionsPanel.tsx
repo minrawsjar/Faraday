@@ -183,7 +183,18 @@ export function PositionsPanel({
                     <div>Target <span className="font-mono text-white/60">{position.targetHF.toFixed(2)}</span></div>
                   </div>
                 </div>
-                <HFBar hf={position.triggerHF * 1.03} trigger={position.triggerHF} />
+                {(() => {
+                  if (detecting) return (
+                    <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+                      <span className="w-3 h-3 rounded-full border border-cyan-500/40 border-t-cyan-400 animate-spin" />
+                      Fetching live HF…
+                    </div>
+                  );
+                  const live = detected.find((d) => d.chainId === position.chainId);
+                  return live
+                    ? <HFBar hf={live.healthFactor} trigger={position.triggerHF} />
+                    : <p className="text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>No active position found on this chain</p>;
+                })()}
               </div>
             ))}
           </div>

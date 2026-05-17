@@ -1,22 +1,38 @@
 "use client";
 
-export type DashboardTab = "dashboard" | "logs";
+export type DashboardTab = "dashboard" | "positions" | "vault" | "logs";
 
 const NAV: { label: string; key: DashboardTab }[] = [
   { label: "Dashboard",  key: "dashboard" },
+  { label: "Positions",  key: "positions" },
+  { label: "Vault",      key: "vault" },
   { label: "Agent Logs", key: "logs" },
 ];
 
 export function Sidebar({
   activeTab,
   onTabChange,
+  open = false,
+  onClose,
 }: {
   activeTab: DashboardTab;
   onTabChange: (tab: DashboardTab) => void;
+  open?: boolean;
+  onClose?: () => void;
 }) {
   return (
+    <>
+      {/* Mobile backdrop */}
+      {open && (
+        <div
+          className="fixed inset-0 z-30 md:hidden"
+          style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}
+          onClick={onClose}
+        />
+      )}
     <aside
-      className="fixed top-0 left-0 h-full w-[240px] flex flex-col z-20"
+      className={`fixed top-0 left-0 h-full w-[240px] flex flex-col z-40 transition-transform duration-300
+        ${open ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
       style={{
         background: "linear-gradient(195deg, #0d1b3e 0%, #060d1f 100%)",
         borderRight: "1px solid rgba(255,255,255,0.06)",
@@ -83,5 +99,6 @@ export function Sidebar({
         </div>
       </div>
     </aside>
+    </>
   );
 }
